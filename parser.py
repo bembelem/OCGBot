@@ -5,7 +5,8 @@ import requests
 class Parser:
     def __init__(self):
         self.url = 'https://www.dvfu.ru/news'
-        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0'}
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0)\
+         Gecko/20100101 Firefox/125.0'}
         page = requests.get(self.url, headers=self.headers)
         soup = BeautifulSoup(page.text, "html.parser")
 
@@ -24,24 +25,22 @@ class Parser:
         else:
             return ['Такой страницы нет', '']
 
-        title = box.findNext('span', class_='news-item-short').text
+        title = box.findNext('span', class_='news-item-short').text + '\n'
 
         link = box.findNext('a')['href']
         link = 'https://www.dvfu.ru' + link
 
         text = self.get_news_text(link)
+        # article = f'*{title}*\n{text}\n{link}'
 
-        article = f'*{title}*\n{text}\n{link}'
-
-        return article
+        return {'title': title, 'text': text, 'link': link}
 
     def get_news_text(self, link):
         text = ''
-        page_text = requests.get(link, headers=self.headers)
-        soup_text = BeautifulSoup(page_text.text, "html.parser")
-        text_p = soup_text.findAll('p')[3:][:-16]
+        page = requests.get(link, headers=self.headers)
+        soup = BeautifulSoup(page.text, "html.parser")
+
+        text_p = soup.findAll('p')[3:][:-16]
         for line in text_p:
             text += f'{line.text}\n'
         return text
-
-
