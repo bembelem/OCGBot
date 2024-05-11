@@ -54,6 +54,7 @@ async def get_news(call: types.CallbackQuery):
                            reply_markup=keyboard.move_keyboard
                            )
 
+
 @disp.callback_query_handler(text=['il5'])
 async def get_news(call: types.CallbackQuery):
     await bot.send_message(call.message.chat.id,
